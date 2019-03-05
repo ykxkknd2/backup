@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- 根据宽度，item宽度固定，设计决定一行最多能显示多少个item,item个数如果不够一行,则通过增加边距去展示 -->
+	<title>处理flex_wrap最后一行问题</title>
+	<style type="text/css">
+		.container{
+			display: flex;
+			flex-wrap: wrap;
+			width: 70%;
+			justify-content: space-around;
+			border: dashed 1px;
+		}
+
+		.box{
+			/*flex-grow: 1;*/
+			flex-basis: 200px;
+			height: 200px;
+			background-color: #666;
+			margin: 5px;
+		}
+		/*找到一行能展示的最大数目（这个例子是6），让之后的box高度都为0占位*/
+		.box:nth-last-child(6) ~ .box{
+			height: 0;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+	<!-- 0 height 占位 输出最大一行个数减1个(n-1)  -->
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+	<div class="box"></div>
+</div>
+</body>
+</html>
