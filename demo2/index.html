@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    Notification.requestPermission().then(grant => {
+        console.log(grant); // 如果获得权限，会得到 granted
+        if (Notification.permission === 'denied') {
+            console.log('用户拒绝了通知权限');
+        }
+    });
+
+    if (navigator.serviceWorker != null) {
+        navigator.serviceWorker.register('sw.js')
+            .then(function(registration) {
+                window.registration = registration;
+            })
+
+
+        //当sw状态为active时 https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/ready
+        navigator.serviceWorker.ready
+            .then(function(registration){
+                registration.sync.register("workOrderSync");
+                //获取已有订阅
+                return registration.pushManager.getSubscription();
+            })
+            .then((function(subscription){
+                // 获取的结果没有任何订阅，发起一个订阅 https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe
+                if (!subscription) {
+                    return window.registration.pushManager.subscribe({
+                        userVisibleOnly: true
+                    });
+                } else {
+                    // 每一个会话会有一个独立的端点(endpoint)，用于推送时后端识别
+                    return console.log("已订阅 endpoint:", subscription.endpoint);
+                }
+            }))
+            .then(subscription => {
+                if (!subscription) {
+                    return;
+                }
+                // 订阅成功
+                console.log('订阅成功！', subscription.endpoint);
+
+            })
+            .catch(function (e) {
+                // 订阅失败
+                console.log('订阅失败', e);
+            });
+    }
+</script>
+</body>
+</html>

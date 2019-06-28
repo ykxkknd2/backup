@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var ws = new WebSocket("ws://localhost:8001");
+
+    ws.onopen = function()
+    {
+        // Web Socket 已连接上，使用 send() 方法发送数据
+        ws.send("发送数据");
+    };
+
+    ws.onmessage = function (evt)
+    {
+        var received_msg = evt.data;
+        console.log("数据已接收...",evt.data);
+    };
+
+    ws.onclose = function()
+    {
+        // 关闭 websocket
+        console.log("连接已关闭...");
+    };
+</script>
+</body>
+</html>

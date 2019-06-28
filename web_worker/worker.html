@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        @keyframes ani {
+            0%{
+                width: 0px;
+            }
+            50%{
+                width: 200px;
+            }
+            100%{
+                width: 0px;
+            }
+        }
+
+        .ani{
+            height: 100px;
+            background: aqua;
+            animation: ani 3s infinite;
+        }
+    </style>
+</head>
+<body>
+<div class="ani"></div>
+<button id="calculate">计算</button>
+<button id="calculateByWorker">worker计算</button>
+<p>结果：<span id="result"></span></p>
+<script>
+    let resultDom = document.getElementById('result');
+    document.getElementById('calculate').onclick = function(){
+        resultDom.innerHTML = '';
+        //模拟一个大计算量的方法
+        let result = 0,i=0;
+        while(i++<Math.pow(10,9)){
+            result+= i;
+        }
+        resultDom.innerHTML = result;
+    }
+
+    document.getElementById('calculateByWorker').onclick = function(){
+        resultDom.innerHTML= '';
+        worker.postMessage({type:'calculate'})
+    }
+
+
+    let worker = new Worker('worker.js');
+    worker.onmessage = function(evt){
+        resultDom.innerHTML = evt.data;
+    }
+</script>
+</body>
+</html>
